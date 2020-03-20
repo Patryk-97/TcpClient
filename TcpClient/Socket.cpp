@@ -49,15 +49,12 @@ bool Socket::connect(const std::string& address, const int port)
       this->socketAddr.sin_family = AF_INET6;
    }
    this->socketAddr.sin_port = htons(port);
-   InetPton(AF_INET, (PCWSTR)address.c_str(), &this->socketAddr.sin_addr);
+   inet_pton(AF_INET, address.c_str(), &this->socketAddr.sin_addr);
 
-   std::cout << "Before\n";
    if (::connect(this->socket, (sockaddr*)&this->socketAddr, sizeof(this->socketAddr)) == SOCKET_ERROR)
    {
-      std::cout << WSAGetLastError() << "\n";
       rV = false;
    }
-   std::cout << "After\n";
 
    return rV;
 }
