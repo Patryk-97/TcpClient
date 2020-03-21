@@ -5,6 +5,7 @@
 #include <windows.h>
 #include "Socket.h"
 
+#define RECV_BUFF_SIZE 4096
 #define DLL_WS_VER MAKEWORD(2, 2)
 
 std::string getErrorMessage(void);
@@ -15,6 +16,8 @@ int main()
    std::unique_ptr<Socket> socket = nullptr;
    std::string ipAddress;
    uint16_t port;
+   char recvBuff[RECV_BUFF_SIZE];
+   std::string sendBuff;
 
    if (WSAStartup(DLL_WS_VER, &wsaData) != NO_ERROR)
    {
@@ -27,6 +30,7 @@ int main()
 
    std::cout << "Enter port: ";
    std::cin >> port;
+   std::cin.ignore();
 
    socket = std::make_unique<Socket>();
 
@@ -55,6 +59,21 @@ int main()
       WSACleanup();
       return -1;
    }
+
+   do
+   {
+      std::cout << "Input message to server: ";
+      std::getline(std::cin, sendBuff);
+
+      if (sendBuff.length() > 0 && true == socket->send(sendBuff))
+      {
+         if (socket->recv(recvBuff, RECV_BUFF_SIZE) > 0)
+         {
+            std::cout << "Output from server: " << recvBuff << "\n";
+         }
+      }
+
+   } while (sendBuff.length() > 0);
 
    socket->close();
    std::cout << "Socket closed" << "\n";

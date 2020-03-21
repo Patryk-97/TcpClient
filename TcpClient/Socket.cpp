@@ -71,6 +71,30 @@ bool Socket::connect(const char* address, const uint16_t port)
    return rV;
 }
 
+bool Socket::send(const std::string& sendBuff)
+{
+   // locals
+   bool rV = true;
+
+   if (::send(this->socket, sendBuff.c_str(), sendBuff.length() + 1, 0) == SOCKET_ERROR)
+   {
+      rV = false;
+   }
+
+   return rV;
+}
+
+int Socket::recv(char* recvBuff, int recvBuffSize)
+{
+   // locals
+   int rV = 0;
+
+   memset(recvBuff, 0, recvBuffSize);
+   rV = ::recv(this->socket, recvBuff, recvBuffSize, 0);
+
+   return rV;
+}
+
 void Socket::close()
 {
    if (this->socket != INVALID_SOCKET)
