@@ -4,7 +4,7 @@
 #include <windows.h>
 #include "Socket.h"
 
-#define IP_ADDRESS "127.0.0.1"
+#define IP_ADDRESS "localhost"
 #define PORT 54000
 #define DLL_WS_VER MAKEWORD(2, 2)
 

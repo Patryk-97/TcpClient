@@ -6,7 +6,6 @@
 #include <memory>
 #include <Ws2tcpip.h>
 #include <string>
-#include <iostream>
 
 class Socket
 {
@@ -29,10 +28,26 @@ public:
    ~Socket();
    void reset(void);
    bool init(IpProtocol ipProtocol, TxProtocol txProtocol);
-   bool connect(const char* address, const int port);
+   bool connect(const char* address, const uint16_t port);
    void close();
+   std::string getIpAddress(void) const;
+   std::string getPort(void) const;
+   std::string getIpProtocolStr(void) const;
+   IpProtocol getIpProtocol(void) const;
+   std::string getTxProtocolStr(void) const;
+   TxProtocol getTxProtocol(void) const;
 
 private:
+   
+   // private methods
+   void fillAddrInfoCriteria(addrinfo* hints) const;
+   bool fillNetworkAddressStructure(const char* address);
+   void fillPort(uint16_t port);
+   void fillIpProtocolFamily(void);
+
+private:
+   
+   // attributes
    SOCKET socket;
    IpProtocol ipProtocol;
    TxProtocol txProtocol;
