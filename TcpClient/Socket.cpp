@@ -69,7 +69,7 @@ bool Socket::connect(const char* address, const int port)
    this->socketAddr->sin_port = htons(port);
    inet_pton(AF_INET, address, &this->socketAddr->sin_addr);
 
-   if (::connect(this->socket, (sockaddr*)&(*this->socketAddr), sizeof(this->socketAddr)) == SOCKET_ERROR)
+   if (::connect(this->socket, (sockaddr*)this->socketAddr.get(), sizeof(*this->socketAddr)) == SOCKET_ERROR)
    {
       rV = false;
    }
