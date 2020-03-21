@@ -30,30 +30,32 @@ void WinsockManager::cleanup(void)
 
 std::string WinsockManager::getErrorMessage(void)
 {
+   // locals
    std::string rV;
+   int errorNo = WSAGetLastError();
 
-   switch (WSAGetLastError())
+   switch (errorNo)
    {
-   case WSAETIMEDOUT:
-   {
-      rV = "Connection timed out.";
-      break;
-   }
-   case WSAECONNREFUSED:
-   {
-      rV = "Connection refused. Probably wrong port";
-      break;
-   }
-   case WSAHOST_NOT_FOUND:
-   {
-      rV = "Host not found. Wrong ip address or DNS address";
-      break;
-   }
-   default:
-   {
-      rV = "Unsupported error";
-      break;
-   }
+      case WSAETIMEDOUT:
+      {
+         rV = "Connection timed out.";
+         break;
+      }
+      case WSAECONNREFUSED:
+      {
+         rV = "Connection refused. Probably wrong port";
+         break;
+      }
+      case WSAHOST_NOT_FOUND:
+      {
+         rV = "Host not found. Wrong ip address or DNS address";
+         break;
+      }
+      default:
+      {
+         rV = "Unsupported error #" + std::to_string(errorNo);
+         break;
+      }
    }
 
    return rV;
