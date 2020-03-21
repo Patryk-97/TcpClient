@@ -1,25 +1,23 @@
 ﻿#include <iostream>
 #include <string>
 #include <memory>
-#include <winsock2.h>
-#include <windows.h>
 #include "Socket.h"
+#include "WinsockManager.h"
 
 #define RECV_BUFF_SIZE 4096
-#define DLL_WS_VER MAKEWORD(2, 2)
-
-std::string getErrorMessage(void);
+#define DLL_WINSOCK_VERSION MAKEWORD(2, 2)
 
 int main()
 {
-   WSADATA wsaData;
+   std::unique_ptr<WinsockManager> winsockManager = std::make_unique<WinsockManager>();
    std::unique_ptr<Socket> socket = nullptr;
    std::string ipAddress;
    uint16_t port;
    char recvBuff[RECV_BUFF_SIZE];
    std::string sendBuff;
+   char decision = 'Y';
 
-   if (WSAStartup(DLL_WS_VER, &wsaData) != NO_ERROR)
+   if (false == winsockManager->startup(DLL_WINSOCK_VERSION))
    {
       printf("Winsock initialization error\n");
       return -1;
@@ -30,7 +28,6 @@ int main()
 
    std::cout << "Enter port: ";
    std::cin >> port;
-   std::cin.ignore();
 
    socket = std::make_unique<Socket>();
 
@@ -41,8 +38,8 @@ int main()
    else
    {
       std::cout << "Cannot initialiaze a socket\n";
-      std::cout << "Error: " << getErrorMessage() << "\n";
-      WSACleanup();
+      std::cout << "Error: " << winsockManager->getErrorMessage() << "\n";
+      winsockManager->cleanup();
       return -1;
    }
 
@@ -53,16 +50,17 @@ int main()
    else
    {
       std::cout << "Cannot connect to server [" <<  ipAddress << ", " << port << "]\n";
-      std::cout << "Error: " << getErrorMessage() << "\n";
+      std::cout << "Error: " << winsockManager->getErrorMessage() << "\n";
       socket->close();
       std::cout << "Socket closed" << "\n";
-      WSACleanup();
+      winsockManager->cleanup();
       return -1;
    }
 
    do
    {
       std::cout << "Input message to server: ";
+      std::cin.ignore();
       std::getline(std::cin, sendBuff);
 
       if (sendBuff.length() > 0 && true == socket->send(sendBuff))
@@ -73,41 +71,13 @@ int main()
          }
       }
 
-   } while (sendBuff.length() > 0);
+      std::cout << "Keep doing? Y/N: ";
+      std::cin >> decision;
+
+   } while (decision == 'Y' || decision == 'y');
 
    socket->close();
    std::cout << "Socket closed" << "\n";
-   WSACleanup();
+   winsockManager->cleanup();
    return 0;
-}
-
-std::string getErrorMessage(void)
-{
-   std::string rV;
-
-   switch (WSAGetLastError())
-   {
-      case WSAETIMEDOUT:
-      {
-         rV = "Connection timed out.";
-         break;
-      }
-      case WSAECONNREFUSED:
-      {
-         rV = "Connection refused. Probably wrong port";
-         break;
-      }
-      case WSAHOST_NOT_FOUND:
-      {
-         rV = "Host not found. Wrong ip address or DNS address";
-         break;
-      }
-      default:
-      {
-         rV = "Unsupported error";
-         break;
-      }
-   }
-
-   return rV;
 }
