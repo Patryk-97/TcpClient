@@ -71,12 +71,14 @@ bool Socket::connect(const char* address, const uint16_t port)
    return rV;
 }
 
-bool Socket::send(const std::string& sendBuff)
+bool Socket::send(const std::string& sendBuff, int& bytesSend)
 {
    // locals
    bool rV = true;
 
-   if (::send(this->socket, sendBuff.c_str(), sendBuff.length() + 1, 0) == SOCKET_ERROR)
+   bytesSend = ::send(this->socket, sendBuff.c_str(), sendBuff.length() + 1, 0);
+
+   if (bytesSend == SOCKET_ERROR)
    {
       rV = false;
    }

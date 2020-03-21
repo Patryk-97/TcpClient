@@ -29,7 +29,7 @@ public:
    void reset(void);
    bool init(IpProtocol ipProtocol, TxProtocol txProtocol);
    bool connect(const char* address, const uint16_t port);
-   bool send(const std::string& sendBuff);
+   bool send(const std::string& sendBuff, int& bytesSend);
    int recv(char* recvBuff, int recvBuffSize);
    void close();
    std::string getIpAddress(void) const;

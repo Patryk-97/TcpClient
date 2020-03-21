@@ -16,6 +16,8 @@ int main()
    char recvBuff[RECV_BUFF_SIZE];
    std::string sendBuff;
    char decision = 'Y';
+   int bytesSend = 0;
+   int bytesReceived = 0;
 
    if (false == winsockManager->startup(DLL_WINSOCK_VERSION))
    {
@@ -63,11 +65,12 @@ int main()
       std::cin.ignore();
       std::getline(std::cin, sendBuff);
 
-      if (sendBuff.length() > 0 && true == socket->send(sendBuff))
+      if (sendBuff.length() > 0 && true == socket->send(sendBuff, bytesSend))
       {
-         if (socket->recv(recvBuff, RECV_BUFF_SIZE) > 0)
+         if ((bytesReceived = socket->recv(recvBuff, RECV_BUFF_SIZE)) > 0)
          {
             std::cout << "Output from server: " << recvBuff << "\n";
+            std::cout << "Bytes send: " << bytesSend << ", bytes received: " << bytesReceived << "\n";
          }
       }
 
