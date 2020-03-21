@@ -5,6 +5,24 @@ Socket::Socket()
    this->socket = INVALID_SOCKET;
    this->ipProtocol = IpProtocol::IPV4;
    this->txProtocol = TxProtocol::TCP;
+   this->socketAddr = std::make_unique<sockaddr_in>();
+}
+
+Socket::~Socket()
+{
+   this->reset();
+}
+
+void Socket::reset(void)
+{
+   if (this->socket != INVALID_SOCKET)
+   {
+      closesocket(this->socket);
+   }
+   this->ipProtocol = IpProtocol::IPV4;
+   this->txProtocol = TxProtocol::TCP;
+   this->socketAddr.reset(new sockaddr_in());
+   this->socket = INVALID_SOCKET;
 }
 
 bool Socket::init(IpProtocol ipProtocol, TxProtocol txProtocol)
@@ -35,23 +53,23 @@ bool Socket::init(IpProtocol ipProtocol, TxProtocol txProtocol)
    return rV;
 }
 
-bool Socket::connect(const std::string& address, const int port)
+bool Socket::connect(const char* address, const int port)
 {
    // locals
    bool rV = true;
 
    if (this->ipProtocol == IpProtocol::IPV4)
    {
-      this->socketAddr.sin_family = AF_INET;
+      this->socketAddr->sin_family = AF_INET;
    }
    else
    {
-      this->socketAddr.sin_family = AF_INET6;
+      this->socketAddr->sin_family = AF_INET6;
    }
-   this->socketAddr.sin_port = htons(port);
-   inet_pton(AF_INET, address.c_str(), &this->socketAddr.sin_addr);
+   this->socketAddr->sin_port = htons(port);
+   inet_pton(AF_INET, address, &this->socketAddr->sin_addr);
 
-   if (::connect(this->socket, (sockaddr*)&this->socketAddr, sizeof(this->socketAddr)) == SOCKET_ERROR)
+   if (::connect(this->socket, (sockaddr*)&(*this->socketAddr), sizeof(this->socketAddr)) == SOCKET_ERROR)
    {
       rV = false;
    }
@@ -61,5 +79,8 @@ bool Socket::connect(const std::string& address, const int port)
 
 void Socket::close()
 {
-   closesocket(this->socket);
+   if (this->socket != INVALID_SOCKET)
+   {
+      closesocket(this->socket);
+   }
 }
