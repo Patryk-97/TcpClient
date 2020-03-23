@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <string>
 #include <memory>
-#include "Socket.h"
+#include "ClientSocket.h"
 #include "WinsockManager.h"
 
 #define RECV_BUFF_SIZE 4096
@@ -10,7 +10,7 @@
 int main()
 {
    std::unique_ptr<WinsockManager> winsockManager = std::make_unique<WinsockManager>();
-   std::unique_ptr<Socket> socket = nullptr;
+   std::unique_ptr<ClientSocket> clientSocket = nullptr;
    std::string ipAddress;
    uint16_t port;
    char recvBuff[RECV_BUFF_SIZE];
@@ -31,9 +31,9 @@ int main()
    std::cout << "Enter port: ";
    std::cin >> port;
 
-   socket = std::make_unique<Socket>();
+   clientSocket = std::make_unique<ClientSocket>();
 
-   if (true == socket->init(Socket::IpProtocol::IPV4, Socket::TxProtocol::TCP))
+   if (true == clientSocket->init(ClientSocket::IpProtocol::IPV4, ClientSocket::TxProtocol::TCP))
    {
       std::cout << "Socket initialized\n";
    }
@@ -45,7 +45,7 @@ int main()
       return -1;
    }
 
-   if (true == socket->connect(ipAddress.c_str(), port))
+   if (true == clientSocket->connect(ipAddress.c_str(), port))
    {
       std::cout << "Socket connected to server [" << ipAddress << ", " << port << "]\n";
    }
@@ -53,7 +53,7 @@ int main()
    {
       std::cout << "Cannot connect to server [" <<  ipAddress << ", " << port << "]\n";
       std::cout << "Error: " << winsockManager->getErrorMessage() << "\n";
-      socket->close();
+      clientSocket->close();
       std::cout << "Socket closed" << "\n";
       winsockManager->cleanup();
       return -1;
@@ -65,9 +65,9 @@ int main()
       std::cin.ignore();
       std::getline(std::cin, sendBuff);
 
-      if (sendBuff.length() > 0 && true == socket->send(sendBuff, bytesSend))
+      if (sendBuff.length() > 0 && true == clientSocket->send(sendBuff, bytesSend))
       {
-         if ((bytesReceived = socket->recv(recvBuff, RECV_BUFF_SIZE)) > 0)
+         if ((bytesReceived = clientSocket->recv(recvBuff, RECV_BUFF_SIZE)) > 0)
          {
             std::cout << "Output from server: " << recvBuff << "\n";
             std::cout << "Bytes send: " << bytesSend << ", bytes received: " << bytesReceived << "\n";
@@ -79,7 +79,7 @@ int main()
 
    } while (decision == 'Y' || decision == 'y');
 
-   socket->close();
+   clientSocket->close();
    std::cout << "Socket closed" << "\n";
    winsockManager->cleanup();
    return 0;

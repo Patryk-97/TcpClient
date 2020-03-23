@@ -1,6 +1,6 @@
-#include "Socket.h"
+#include "ClientSocket.h"
 
-Socket::Socket()
+ClientSocket::ClientSocket()
 {
    this->socket = INVALID_SOCKET;
    this->ipProtocol = IpProtocol::IPV4;
@@ -8,12 +8,12 @@ Socket::Socket()
    this->socketAddr = std::make_unique<sockaddr_in>();
 }
 
-Socket::~Socket()
+ClientSocket::~ClientSocket()
 {
    this->reset();
 }
 
-void Socket::reset(void)
+void ClientSocket::reset(void)
 {
    if (this->socket != INVALID_SOCKET)
    {
@@ -25,7 +25,7 @@ void Socket::reset(void)
    this->socket = INVALID_SOCKET;
 }
 
-bool Socket::init(IpProtocol ipProtocol, TxProtocol txProtocol)
+bool ClientSocket::init(IpProtocol ipProtocol, TxProtocol txProtocol)
 {
    // locals
    int family = AF_INET;
@@ -53,7 +53,7 @@ bool Socket::init(IpProtocol ipProtocol, TxProtocol txProtocol)
    return rV;
 }
 
-bool Socket::connect(const char* address, const uint16_t port)
+bool ClientSocket::connect(const char* address, const uint16_t port)
 {
    // locals
    bool rV = true;
@@ -71,7 +71,7 @@ bool Socket::connect(const char* address, const uint16_t port)
    return rV;
 }
 
-bool Socket::send(const std::string& sendBuff, int& bytesSend)
+bool ClientSocket::send(const std::string& sendBuff, int& bytesSend)
 {
    // locals
    bool rV = true;
@@ -86,7 +86,7 @@ bool Socket::send(const std::string& sendBuff, int& bytesSend)
    return rV;
 }
 
-int Socket::recv(char* recvBuff, int recvBuffSize)
+int ClientSocket::recv(char* recvBuff, int recvBuffSize)
 {
    // locals
    int rV = 0;
@@ -97,7 +97,7 @@ int Socket::recv(char* recvBuff, int recvBuffSize)
    return rV;
 }
 
-void Socket::close()
+void ClientSocket::close()
 {
    if (this->socket != INVALID_SOCKET)
    {
@@ -105,7 +105,7 @@ void Socket::close()
    }
 }
 
-std::string Socket::getIpAddress(void) const
+std::string ClientSocket::getIpAddress(void) const
 {
    // locals
    std::string rV = "\"";
@@ -118,7 +118,7 @@ std::string Socket::getIpAddress(void) const
    return rV;
 }
 
-std::string Socket::getPort(void) const
+std::string ClientSocket::getPort(void) const
 {
    // locals
    uint16_t port = (this->socketAddr->sin_port & 0xFF00) >> 8 | (this->socketAddr->sin_port & 0x00FF) << 8;
@@ -127,7 +127,7 @@ std::string Socket::getPort(void) const
    return rV;
 }
 
-std::string Socket::getIpProtocolStr(void) const
+std::string ClientSocket::getIpProtocolStr(void) const
 {
    // locals
    std::string rV;
@@ -136,12 +136,12 @@ std::string Socket::getIpProtocolStr(void) const
    return rV;
 }
 
-Socket::IpProtocol Socket::getIpProtocol(void) const
+ClientSocket::IpProtocol ClientSocket::getIpProtocol(void) const
 {
    return this->ipProtocol;
 }
 
-std::string Socket::getTxProtocolStr(void) const
+std::string ClientSocket::getTxProtocolStr(void) const
 {
    // locals
    std::string rV;
@@ -150,19 +150,19 @@ std::string Socket::getTxProtocolStr(void) const
    return rV;
 }
 
-Socket::TxProtocol Socket::getTxProtocol(void) const
+ClientSocket::TxProtocol ClientSocket::getTxProtocol(void) const
 {
    return this->txProtocol;
 }
 
-void Socket::fillAddrInfoCriteria(addrinfo* hints) const
+void ClientSocket::fillAddrInfoCriteria(addrinfo* hints) const
 {
    memset(hints, 0, sizeof(*hints));
    hints->ai_socktype = this->txProtocol == TxProtocol::TCP ? SOCK_STREAM : SOCK_DGRAM;
    hints->ai_family = this->ipProtocol == IpProtocol::IPV4 ? AF_INET : AF_INET6;
 }
 
-bool Socket::fillNetworkAddressStructure(const char* address)
+bool ClientSocket::fillNetworkAddressStructure(const char* address)
 {
    // locals
    bool rV = true;
@@ -193,12 +193,12 @@ bool Socket::fillNetworkAddressStructure(const char* address)
    return rV;
 }
 
-void Socket::fillPort(uint16_t port)
+void ClientSocket::fillPort(uint16_t port)
 {
    this->socketAddr->sin_port = htons(port);
 }
 
-void Socket::fillIpProtocolFamily(void)
+void ClientSocket::fillIpProtocolFamily(void)
 {
    if (this->ipProtocol == IpProtocol::IPV4)
    {

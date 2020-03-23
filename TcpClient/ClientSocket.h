@@ -1,13 +1,13 @@
 #pragma once
 
-#ifndef __SOCKET_H__
-#define __SOCKET_H__
+#ifndef __CLIENT_SOCKET_H__
+#define __CLIENT_SOCKET_H__
 
 #include <memory>
 #include <Ws2tcpip.h>
 #include <string>
 
-class Socket
+class ClientSocket
 {
 public:
    enum class IpProtocol
@@ -24,8 +24,8 @@ public:
       UNDEFINED
    };
 
-   Socket();
-   ~Socket();
+   ClientSocket();
+   ~ClientSocket();
    void reset(void);
    bool init(IpProtocol ipProtocol, TxProtocol txProtocol);
    bool connect(const char* address, const uint16_t port);
@@ -56,4 +56,4 @@ private:
    std::unique_ptr<sockaddr_in> socketAddr;
 };
 
-#endif //__SOCKET_H__
+#endif //__CLIENT_SOCKET_H__
