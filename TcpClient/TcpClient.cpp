@@ -71,13 +71,17 @@ int main()
          {
             std::cout << "Output from server: " << recvBuff << "\n";
             std::cout << "Bytes send: " << bytesSend << ", bytes received: " << bytesReceived << "\n";
+
+            std::cout << "Keep doing? Y/N: ";
+            std::cin >> decision;
+         }
+         else
+         {
+            std::cout << "Connection has been terminated\n";
          }
       }
 
-      std::cout << "Keep doing? Y/N: ";
-      std::cin >> decision;
-
-   } while (decision == 'Y' || decision == 'y');
+   } while ((decision == 'Y' || decision == 'y') && (bytesReceived > 0));
 
    clientSocket->close();
    std::cout << "Socket closed" << "\n";
