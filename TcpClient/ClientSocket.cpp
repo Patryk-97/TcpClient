@@ -31,7 +31,7 @@ bool ClientSocket::connect(const char* address, const uint16_t port)
 {
    // locals
    bool rV = true;
-   int sockAddrSize = sizeof(this->localSocketAddr);
+   int sockAddrSize = sizeof(*this->localSocketAddr);
 
    this->fillIpProtocolFamily();
    this->fillPort(port);
