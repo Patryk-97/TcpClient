@@ -42,6 +42,16 @@ std::string WinsockManager::getErrorMessage(void)
          rV += "than the sizeof(sockaddr). Check functions like getsockname().";
          break;
       }
+      case WSAEADDRNOTAVAIL:
+      {
+         rV = "Propably you choose port 0.";
+         break;
+      }
+      case WSAECONNRESET:
+      {
+         rV = "Connection reset by peer. An existing connection was forcibly closed by the remote host.";
+         break;
+      }
       case WSAETIMEDOUT:
       {
          rV = "Connection timed out.";
@@ -54,7 +64,7 @@ std::string WinsockManager::getErrorMessage(void)
       }
       case WSAHOST_NOT_FOUND:
       {
-         rV = "Host not found. Wrong ip address or DNS address";
+         rV = "Host not found. Wrong ip address or DNS address.";
          break;
       }
       default:
