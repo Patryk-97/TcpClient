@@ -36,6 +36,12 @@ std::string WinsockManager::getErrorMessage(void)
 
    switch (errorNo)
    {
+      case WSAEFAULT:
+      {
+         rV = "Bad pointer. Probably you passed wrong length of size sockaddr structure and it is smaller ";
+         rV += "than the sizeof(sockaddr). Check functions like getsockname().";
+         break;
+      }
       case WSAETIMEDOUT:
       {
          rV = "Connection timed out.";
