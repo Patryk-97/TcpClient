@@ -154,11 +154,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClientSocket.cpp" />
+    <ClCompile Include="Socket.cpp" />
     <ClCompile Include="TcpClient.cpp" />
     <ClCompile Include="WinsockManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientSocket.h" />
+    <ClInclude Include="IpProtocol.h" />
+    <ClInclude Include="Socket.h" />
+    <ClInclude Include="TxProtocol.h" />
     <ClInclude Include="WinsockManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

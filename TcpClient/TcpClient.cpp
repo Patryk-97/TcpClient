@@ -33,7 +33,7 @@ int main()
 
    clientSocket = std::make_unique<ClientSocket>();
 
-   if (true == clientSocket->init(ClientSocket::IpProtocol::IPV4, ClientSocket::TxProtocol::TCP))
+   if (true == clientSocket->init(IpProtocol::IPV4, TxProtocol::TCP))
    {
       std::cout << "Socket initialized\n";
    }
