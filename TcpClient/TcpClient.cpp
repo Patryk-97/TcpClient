@@ -86,5 +86,6 @@ int main()
    clientSocket->close();
    std::cout << "Socket closed" << "\n";
    winsockManager->cleanup();
+   std::cin.get();
    return 0;
 }
